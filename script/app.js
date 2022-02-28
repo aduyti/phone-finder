@@ -5,7 +5,9 @@ let displayResults = 0;
 document.getElementById('search-button').addEventListener('click', () => {
     const input = document.getElementById('search-input');
     if (input.value) {
+        ////////////////////////////////////////////////////////////////
         maxDisplayResults = 5;
+        ////////////////////////////////////////////////////////////////
         searchInput = input.value;
         loadSearchData(searchInput.toLowerCase());
     }
@@ -18,11 +20,13 @@ document.getElementById('search-button').addEventListener('click', () => {
 
 const loadSearchData = async (searchKey) => {
     // const phoneDetailsURL = "https://openapi.programming-hero.com/api/phone/";
+    spinnerState('result-spinner', 'block');
     const dataURL = `https://openapi.programming-hero.com/api/phones?search=${searchKey}`;
 
     const response = await fetch(dataURL);
     const data = await response.json();
     showSearchResults(data.data);
+    spinnerState('result-spinner', 'none');
 };
 const showSearchResults = phones => {
     emptyElement('search-results');
@@ -44,9 +48,9 @@ const createCardForPhone = ({ brand, image, phone_name, slug }) => {
     phoneDiv.className = "col-md-6 col-lg-4 col-xl-3 col-8 mb-3";
     phoneDiv.innerHTML = `<div class="card">
         <img src="${image}" class="card-img-top w-50 mx-auto mt-2" alt="${phone_name}">
-        <div class="card-body">
+        <div class="card-body ms-5">
             <h5 class="card-title">${phone_name}</h5>
-            <p class="card-text">Brand: ${brand}</p>
+            <h6 class="card-text">Brand: ${brand}</h6>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="loadDetail(${slug})">Show Details</button>
         </div>
     </div>`;
@@ -56,3 +60,10 @@ const createCardForPhone = ({ brand, image, phone_name, slug }) => {
 const emptyElement = (elementID) => {
     document.getElementById(elementID).innerHTML = '';
 }
+
+const spinnerState = (destination, visibility) => {
+    document.getElementById(destination).style.display = visibility;
+};
+
+spinnerState('result-spinner', 'none');
+// spinnerState('modal-spinner', 'none');
