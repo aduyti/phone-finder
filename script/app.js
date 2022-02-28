@@ -19,14 +19,13 @@ document.getElementById('search-button').addEventListener('click', () => {
 });
 
 const loadSearchData = async (searchKey) => {
-    // const phoneDetailsURL = "https://openapi.programming-hero.com/api/phone/";
     emptyElement('search-results');
     spinnerState('result-spinner', 'block');
-    const dataURL = `https://openapi.programming-hero.com/api/phones?search=${searchKey}`;
+    const searchDataURL = `https://openapi.programming-hero.com/api/phones?search=${searchKey}`;
 
-    const response = await fetch(dataURL);
+    const response = await fetch(searchDataURL);
     const data = await response.json();
-    showSearchResults(data.data);
+    data.status ? showSearchResults(data.data) : console.log(`No phone found for '${searchInput}'`);
     spinnerState('result-spinner', 'none');
 };
 const showSearchResults = phones => {
@@ -50,15 +49,37 @@ const createCardForPhone = ({ brand, image, phone_name, slug }) => {
         <div class="card-body ms-5">
             <h5 class="card-title">${phone_name}</h5>
             <h6 class="card-text">Brand: ${brand}</h6>
-            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="loadPhoneData(${slug})">Show Details</button>
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="loadPhoneData('${slug}')">Show Details</button>
         </div>
     </div>`;
     document.getElementById('search-results').appendChild(phoneDiv);
 };
 
-const emptyElement = (elementID) => {
-    document.getElementById(elementID).innerHTML = '';
+const loadPhoneData = async id => {
+    spinnerState('modal-spinner', 'block');
+    emptyElement('exampleModalLabel');
+    emptyElement('modal-phone-image');
+    emptyElement('modal-phone-details');
+    const phoneDetailsURL = `https://openapi.programming-hero.com/api/phone/${id}`;
+    const response = await fetch(phoneDetailsURL);
+    const data = await response.json();
+    data.status ? showPhoneDetail(data.data) : setInnerText('exampleModalLabel', "No phone found");
+    spinnerState('modal-spinner', 'none');
+};
+//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+const showPhoneDetail = phone => {
+    console.log(phone);
 }
+const setInnerText = (elementID, text) => {
+    document.getElementById(elementID).innerText = text;
+}
+const emptyElement = elementID => {
+    document.getElementById(elementID).innerHTML = '';
+};
 
 const spinnerState = (destination, visibility) => {
     document.getElementById(destination).style.display = visibility;
@@ -66,4 +87,3 @@ const spinnerState = (destination, visibility) => {
 
 spinnerState('result-spinner', 'none');
 spinnerState('search-summary', 'none');
-// spinnerState('modal-spinner', 'none');
