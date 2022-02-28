@@ -20,6 +20,7 @@ document.getElementById('search-button').addEventListener('click', () => {
 
 const loadSearchData = async (searchKey) => {
     // const phoneDetailsURL = "https://openapi.programming-hero.com/api/phone/";
+    emptyElement('search-results');
     spinnerState('result-spinner', 'block');
     const dataURL = `https://openapi.programming-hero.com/api/phones?search=${searchKey}`;
 
@@ -29,8 +30,6 @@ const loadSearchData = async (searchKey) => {
     spinnerState('result-spinner', 'none');
 };
 const showSearchResults = phones => {
-    emptyElement('search-results');
-
     if (phones.length) {
         totalResults = phones.length;
         for (displayResults = 0; displayResults < totalResults; displayResults++) {
@@ -39,7 +38,7 @@ const showSearchResults = phones => {
         }
     }
     else {
-        console.log('No phone found');
+        console.log(`No phone found for '${searchInput}'`);
     }
 };
 //  {brand, image, phone_name, slug}
@@ -51,7 +50,7 @@ const createCardForPhone = ({ brand, image, phone_name, slug }) => {
         <div class="card-body ms-5">
             <h5 class="card-title">${phone_name}</h5>
             <h6 class="card-text">Brand: ${brand}</h6>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="loadDetail(${slug})">Show Details</button>
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="loadPhoneData(${slug})">Show Details</button>
         </div>
     </div>`;
     document.getElementById('search-results').appendChild(phoneDiv);
@@ -66,4 +65,5 @@ const spinnerState = (destination, visibility) => {
 };
 
 spinnerState('result-spinner', 'none');
+spinnerState('search-summary', 'none');
 // spinnerState('modal-spinner', 'none');
