@@ -3,7 +3,7 @@ let totalResults = 0;
 let maxDisplayResults = 0;
 let displayResults = 0;
 document.getElementById('search-button').addEventListener('click', () => {
-    emptyElement('search-results');
+    stateInitialize();
     const input = document.getElementById('search-input');
     if (input.value) {
         ////////////////////////////////////////////////////////////////
@@ -18,6 +18,19 @@ document.getElementById('search-button').addEventListener('click', () => {
     }
     input.value = '';
 });
+document.getElementById('all-results-button').addEventListener('click', (event) => {
+    if (event.target.tagName === 'BUTTON') {
+        stateInitialize();
+        maxDisplayResults = totalResults;
+        loadSearchData(searchInput.toLowerCase());
+    }
+});
+const stateInitialize = () => {
+    emptyElement('search-results');
+    elementDisplayState('search-summary', 'none');
+    elementDisplayState('all-results-button', 'none');
+    elementDisplayState('result-spinner', 'none');
+};
 
 const loadSearchData = async (searchKey) => {
     elementDisplayState('result-spinner', 'block');
@@ -31,9 +44,16 @@ const loadSearchData = async (searchKey) => {
 const showSearchResults = phones => {
     if (phones.length) {
         totalResults = phones.length;
-        for (displayResults = 0; displayResults < totalResults; displayResults++) {
-            createCardForPhone(phones[displayResults]);
-            if (displayResults + 1 === maxDisplayResults) { break; }
+        displayResults = 0;
+        while (displayResults < totalResults) {
+            createCardForPhone(phones[displayResults++]);
+            if (displayResults === maxDisplayResults) { break; }
+        }
+        document.getElementById('search-summary').innerText = `Showing ${displayResults} out of ${totalResults} results`;
+        elementDisplayState('search-summary', 'block');
+
+        if (totalResults > displayResults) {
+            elementDisplayState('all-results-button', 'block');
         }
     }
     else {
@@ -122,5 +142,4 @@ const elementDisplayState = (destination, visibility) => {
     document.getElementById(destination).style.display = visibility;
 };
 
-elementDisplayState('result-spinner', 'none');
-elementDisplayState('search-summary', 'none');
+stateInitialize();
