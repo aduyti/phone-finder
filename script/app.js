@@ -20,13 +20,13 @@ document.getElementById('search-button').addEventListener('click', () => {
 
 const loadSearchData = async (searchKey) => {
     emptyElement('search-results');
-    spinnerState('result-spinner', 'block');
+    elementDisplayState('result-spinner', 'block');
     const searchDataURL = `https://openapi.programming-hero.com/api/phones?search=${searchKey}`;
 
     const response = await fetch(searchDataURL);
     const data = await response.json();
     data.status ? showSearchResults(data.data) : console.log(`No phone found for '${searchInput}'`);
-    spinnerState('result-spinner', 'none');
+    elementDisplayState('result-spinner', 'none');
 };
 const showSearchResults = phones => {
     if (phones.length) {
@@ -56,15 +56,15 @@ const createCardForPhone = ({ brand, image, phone_name, slug }) => {
 };
 
 const loadPhoneData = async id => {
-    spinnerState('modal-spinner', 'block');
+    elementDisplayState('modal-spinner', 'block');
     emptyElement('exampleModalLabel');
-    emptyElement('modal-phone-image');
+    elementDisplayState('modal-phone-image', 'none');
     emptyElement('modal-phone-details');
     const phoneDetailsURL = `https://openapi.programming-hero.com/api/phone/${id}`;
     const response = await fetch(phoneDetailsURL);
     const data = await response.json();
     data.status ? showPhoneDetail(data.data) : setInnerText('exampleModalLabel', "No phone found");
-    spinnerState('modal-spinner', 'none');
+    elementDisplayState('modal-spinner', 'none');
 };
 //////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
@@ -72,18 +72,21 @@ const loadPhoneData = async id => {
 ///////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 const showPhoneDetail = phone => {
-    console.log(phone);
-}
+    setInnerText('exampleModalLabel', phone.name);
+    document.getElementById('modal-phone-image').src = phone.image;
+    elementDisplayState('modal-phone-image', 'block');
+
+};
 const setInnerText = (elementID, text) => {
     document.getElementById(elementID).innerText = text;
-}
+};
 const emptyElement = elementID => {
     document.getElementById(elementID).innerHTML = '';
 };
 
-const spinnerState = (destination, visibility) => {
+const elementDisplayState = (destination, visibility) => {
     document.getElementById(destination).style.display = visibility;
 };
 
-spinnerState('result-spinner', 'none');
-spinnerState('search-summary', 'none');
+elementDisplayState('result-spinner', 'none');
+elementDisplayState('search-summary', 'none');
