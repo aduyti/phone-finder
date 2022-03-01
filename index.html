@@ -16,6 +16,7 @@
 
 <body class="bg-light">
     <header class="container">
+        <!-- search input box and button -->
         <div class="input-group my-5 mx-auto w-50">
             <input type="text" class="form-control border-primary" placeholder="Type and Search for Phone"
                 id="search-input">
@@ -23,26 +24,31 @@
         </div>
     </header>
     <main class="container">
+        <!-- search result Loading spinner -->
         <div class="text-center" id="result-spinner">
             <div class="spinner-border text-secondary" style="width: 100px; height: 100px;" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
+        <!-- search result counter -->
         <div id="search-summary" class="text-end fst-italic fw-light me-5 mb-3"></div>
+        <!-- search results and messages to display here -->
         <div id="search-results" class="row justify-content-center"></div>
+        <!-- button to show all the search results -->
         <div id="all-results-button" class="text-center my-3">
-            <button type="button" class="btn btn-outline-primary fw-bold">Show ALL <i
-                    class="bi bi-arrow-right"></i></button>
+            <button type="button" class="btn btn-primary fw-bold">Show ALL <i class="bi bi-arrow-right"></i></button>
         </div>
-        <!-- Modal -->
+        <!-- Modal to display show phone details -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <!-- phone name -->
                         <h5 class="modal-title" id="exampleModalLabel"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <!-- phone details data loading spinner -->
                         <div class="text-center" id="modal-spinner">
                             <div class="spinner-border text-secondary" style="width: 100px; height: 100px;"
                                 role="status">
@@ -50,7 +56,9 @@
                             </div>
                         </div>
                         <div class="card w-100">
+                            <!-- phone image in modal -->
                             <img id="modal-phone-image" src="" class="card-img-top w-50 mx-auto">
+                            <!-- phone details in modal -->
                             <div class="card-body p-2" id="modal-phone-details">
                                 <!-- <p class="card-text"></p> -->
                             </div>
