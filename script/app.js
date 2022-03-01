@@ -3,6 +3,7 @@ let totalResults = 0;
 let maxDisplayResults = 0;
 let displayResults = 0;
 document.getElementById('search-button').addEventListener('click', () => {
+    emptyElement('search-results');
     const input = document.getElementById('search-input');
     if (input.value) {
         ////////////////////////////////////////////////////////////////
@@ -13,18 +14,18 @@ document.getElementById('search-button').addEventListener('click', () => {
     }
     else {
         // error message 
-        console.log('Type something to search');
+        showErrorMessage('Type something to search');
     }
     input.value = '';
 });
 
 const loadSearchData = async (searchKey) => {
-    emptyElement('search-results');
     elementDisplayState('result-spinner', 'block');
 
     const response = await fetch(`https://openapi.programming-hero.com/api/phones?search=${searchKey}`);
     const data = await response.json();
-    data.status ? showSearchResults(data.data) : console.log(`No phone found for '${searchInput}'`);
+
+    data.status ? showSearchResults(data.data) : showErrorMessage(`No phone found for '${searchInput}'`);
     elementDisplayState('result-spinner', 'none');
 };
 const showSearchResults = phones => {
@@ -36,10 +37,11 @@ const showSearchResults = phones => {
         }
     }
     else {
+        showErrorMessage(`No phone found for '${searchInput}'`);
         console.log(`No phone found for '${searchInput}'`);
     }
 };
-//  {brand, image, phone_name, slug}
+
 const createCardForPhone = ({ brand, image, phone_name, slug }) => {
     const phoneDiv = document.createElement('div');
     phoneDiv.className = "col-md-6 col-lg-4 col-xl-3 col-8 mb-3";
@@ -66,23 +68,12 @@ const loadPhoneData = async id => {
     data.status ? showPhoneDetail(data.data) : setInnerText('exampleModalLabel', "No phone found");
     elementDisplayState('modal-spinner', 'none');
 };
-//////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////
+
 const showPhoneDetail = phone => {
     setInnerText('exampleModalLabel', phone.name);
     document.getElementById('modal-phone-image').src = phone.image;
     elementDisplayState('modal-phone-image', 'block');
-    const dataTable = document.createElement('table');
-    dataTable.className = 'table';
-    Object.keys(phone).forEach(key => {
-        if (key === 'slug' || key === 'name' || key === 'image') return;
-        const row = createRow(key, phone[key]);
-        dataTable.appendChild(row);
-    });
-    document.getElementById('modal-phone-details').appendChild(dataTable);
+    document.getElementById('modal-phone-details').appendChild(createTable(phone));
 };
 const createRow = (key, value) => {
     const row = document.createElement('tr');
@@ -93,19 +84,32 @@ const createRow = (key, value) => {
     if (value === '') value = 'Not Available';
     else if (Array.isArray(value)) value = value.join(', ');
     else if (typeof value === 'object') {
-        const nestedTable = document.createElement('table');
-        nestedTable.className = 'table';
-        Object.keys(value).forEach(newKey => {
-            const newRow = createRow(newKey, value[newKey]);
-            nestedTable.appendChild(newRow);
-        })
-        value = nestedTable.outerHTML;
-        console.log(value);
+        value = createTable(value).outerHTML;
     }
     cell_2.innerHTML = value;
     row.appendChild(cell_1);
     row.appendChild(cell_2);
     return row;
+};
+const createTable = value => {
+    const table = document.createElement('table');
+    table.className = 'table';
+    Object.keys(value).forEach(key => {
+        if (!(key === 'slug' || key === 'name' || key === 'image')) {
+            const row = createRow(key, value[key]);
+            table.appendChild(row);
+        }
+    });
+    return table;
+};
+
+const showErrorMessage = message => {
+
+    const errorH2 = document.createElement('h2');
+    errorH2.innerText = message;
+    errorH2.className = 'text-danger text-center fst-italic';
+
+    document.getElementById('search-results').appendChild(errorH2);
 }
 const setInnerText = (elementID, text) => {
     document.getElementById(elementID).innerText = text;
